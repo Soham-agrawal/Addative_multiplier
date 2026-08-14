@@ -3,14 +3,6 @@ Bit-accurate Python model of multiplier_unified (FPLM-1 / CLM, FP16 / bfloat16,
 radix-2 / radix-4), for checking RTL changes against exact multiplication and
 against the reference paper's reported MRED numbers before running a full
 Verilog testbench.
-
-Reference: Niu, Zhang, Jiang, Cockburn, Liu, Han, "Hardware-Efficient
-Logarithmic Floating-Point Multipliers for Error-Tolerant Applications",
-IEEE TCAS-I, vol. 71, no. 1, Jan 2024.
-
-NOTE: this reflects the anti-log fix discussed — mode_select=0 (CLM) must NOT
-double the log-domain remainder when msb_p=1; only mode_select=1 (FPLM) does.
-Keep this file in sync with your actual RTL as you iterate.
 """
 import random
 
@@ -58,11 +50,7 @@ def multiplier_unified(num_a, num_b, format_select, radix_select, mode_select):
         log_approx_a = mant_a & 0x3FF
         log_approx_b = mant_b & 0x3FF
 
-    # radix-4: truncate the LSB of the already-computed log approximation
-    # (per Algorithm 1 in the paper), not the raw mantissa.
-    # FP16 drops 1 bit (real 10-bit datapath); bfloat16 drops 4 bits, since
-    # its native fraction only occupies the top 7 of the shared 10-bit bus
-    # (the rest is zero padding) -- dropping 1 bit there would be a no-op.
+
     log_sum_r2 = mask(log_approx_a + log_approx_b, 12)
 
     if format_select:  # FP16
@@ -128,7 +116,7 @@ def bf16_to_float(u):
 def rand_fp16(exp_lo=10, exp_hi=20):
     """Random normal FP16 bit pattern; exponent range keeps products from
     overflowing/underflowing so you're measuring mantissa error, not range
-    exhaustion (mirrors how the paper isolates mantissa error)."""
+    exhaustion"""
     s = random.randint(0, 1)
     e = random.randint(exp_lo, exp_hi)
     f = random.randint(0, 1023)
@@ -164,6 +152,7 @@ def mred(fmt, mode_select, radix_select, n=200_000, seed=None):
 
 if __name__ == "__main__":
     # Paper's Table I reference numbers (single/half-precision + bfloat16, MRED):
+    #   CLM        : FP16 NA    , bf16 NA
     #   FPLM-1     : FP16 0.0289, bf16 0.0302
     #   FPLM-1-r4  : FP16 0.0290, bf16 0.0330
     #   CLM-r4     : FP16 0.0397, bf16 0.0488
