@@ -44,12 +44,18 @@ module multiplier_unified (
 
     wire [9:0] log_approx_a_radix4 = log_approx_a[10:1];
     wire [9:0] log_approx_b_radix4 = log_approx_b[10:1];
+    //test
+    wire [6:0] log_approx_a_radix4_bf16 = log_approx_a[10:4];
+    wire [6:0] log_approx_b_radix4_bf16 = log_approx_b[10:4];
+    wire [7:0] log_sum_radix4_bf16_preshift = log_approx_a_radix4_bf16 + log_approx_b_radix4_bf16;
+    wire [11:0] log_sum_radix4_bf16 = {log_sum_radix4_bf16_preshift[7:0], 4'b0}; // Shift left for radix-4
+    //endtest
 
     wire [11:0] log_sum_radix2 = log_approx_a + log_approx_b;
     wire [10:0] log_sum_radix4_preshift = log_approx_a_radix4 + log_approx_b_radix4;
     wire [11:0] log_sum_radix4 = {log_sum_radix4_preshift[10:0], 1'b0}; // Shift left by 1 for radix-4
 
-    wire [11:0] log_sum = radix_select ? log_sum_radix4 : log_sum_radix2;
+    wire [11:0] log_sum = radix_select ? (format_select ? log_sum_radix4 : log_sum_radix4_bf16) : log_sum_radix2;
     wire        msb_p   = log_sum[10];
 
     wire [9:0] anti_log_shift = (log_sum[9:0] << 1);
