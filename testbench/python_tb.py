@@ -63,11 +63,19 @@ def multiplier_unified(num_a, num_b, format_select, radix_select, mode_select):
     log_a_r4 = (log_approx_a >> 1) & 0x3FF
     log_b_r4 = (log_approx_b >> 1) & 0x3FF
 
+    log_a_r4_bf16 = (log_approx_a >> 4) & 0x7F
+    log_b_r4_bf16 = (log_approx_b >> 4) & 0x7F
+    log_sum_r4_bf16_pre = mask(log_a_r4_bf16 + log_b_r4_bf16, 8)
+    log_sum_r4_bf16 = mask(log_sum_r4_bf16_pre << 4, 12)     
+
     log_sum_r2 = mask(log_approx_a + log_approx_b, 12)
     log_sum_r4_pre = mask(log_a_r4 + log_b_r4, 11)
     log_sum_r4 = mask(log_sum_r4_pre << 1, 12)  # restore scale with a 0 LSB
-
-    log_sum = log_sum_r4 if radix_select else log_sum_r2
+    
+    if radix_select:
+        log_sum = log_sum_r4 if format_select else log_sum_r4_bf16
+    else:
+        log_sum = log_sum_r2
     msb_p = (log_sum >> 10) & 1
 
     if mode_select:
