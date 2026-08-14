@@ -68,3 +68,21 @@ async def test_randomized_sweep(dut):
                     await apply_and_check(dut, a, b, format_select, radix_select, mode_select)
 
     dut._log.info("All configs passed: %d vectors each", n_per_config)
+
+'''
+output -
+
+  288.00ns INFO     cocotb.regression                  test_multiplier_unified.test_directed_corners passed
+  288.00ns INFO     cocotb.regression                  running test_multiplier_unified.test_randomized_sweep (2/2)
+                                                            Randomized operands, all 8 configs, DUT checked bit-exact against the model.
+  4288.00ns INFO     cocotb.multiplier_unified          All configs passed: 500 vectors each
+  4288.00ns INFO     cocotb.regression                  test_multiplier_unified.test_randomized_sweep passed
+  4288.00ns INFO     cocotb.regression                  *******************************************************************************************************
+                                                        ** TEST                                           STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************************
+                                                        ** test_multiplier_unified.test_directed_corners   PASS         288.00           0.02      12120.08  **
+                                                        ** test_multiplier_unified.test_randomized_sweep   PASS        4000.00           0.28      14179.97  **
+                                                        *******************************************************************************************************
+                                                        ** TESTS=2 PASS=2 FAIL=0 SKIP=0                                4288.00           0.31      13919.36  **
+                                                        *******************************************************************************************************
+'''
