@@ -165,3 +165,14 @@ if __name__ == "__main__":
     for label, mode, radix, fmt, paper_val in checks:
         got = mred(fmt, mode, radix, seed=42)
         print(f"{fmt:5s} {label:10s} model={got:.4f}  paper={paper_val:.4f}")
+
+# output
+#    FP16 CLM        model=0.0384    paper=NA
+#    bf16 CLM        model=0.0384    paper=NA
+#    FP16 FPLM-1     model=0.0288    paper=0.0289
+#    bf16 FPLM-1     model=0.0282    paper=0.0302
+#    FP16 FPLM-1-r4  model=0.0289    paper=0.0290
+#    bf16 FPLM-1-r4  model=0.0314    paper=0.0330
+#    FP16 CLM-r4     model=0.0391    paper=0.0397
+#    bf16 CLM-r4     model=0.0436    paper=0.0488
+
