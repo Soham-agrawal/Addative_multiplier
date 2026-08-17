@@ -3,6 +3,10 @@ Bit-accurate Python model of multiplier_unified (FPLM-1 / CLM, FP16 / bfloat16,
 radix-2 / radix-4), for checking RTL changes against exact multiplication and
 against the reference paper's reported MRED numbers before running a full
 Verilog testbench.
+
+Reference: Niu, Zhang, Jiang, Cockburn, Liu, Han, "Hardware-Efficient
+Logarithmic Floating-Point Multipliers for Error-Tolerant Applications",
+IEEE TCAS-I, vol. 71, no. 1, Jan 2024.
 """
 import random
 
